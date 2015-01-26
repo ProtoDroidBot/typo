@@ -14,7 +14,7 @@ class Admin::CategoriesController < Admin::BaseController
   end
 
   def destroy
-    @record = Category.find(params[:id])
+    @record = is_category_new
     return(render 'admin/shared/destroy') unless request.post?
 
     @record.destroy
@@ -25,7 +25,7 @@ class Admin::CategoriesController < Admin::BaseController
 
   def new_or_edit
     @categories = Category.find(:all)
-    @category = Category.find(params[:id])
+    @category = is_category_new
     @category.attributes = params[:category]
     if request.post?
       respond_to do |format|
@@ -40,6 +40,14 @@ class Admin::CategoriesController < Admin::BaseController
       return
     end
     render 'new'
+  end
+
+  def is_category_new
+    idtest = Category.find_by_id(params[:id])
+    if idtest.nil?
+     idtest = Category.new
+    end
+   return idtest
   end
 
   def save_category
